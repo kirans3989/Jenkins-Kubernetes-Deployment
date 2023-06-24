@@ -30,7 +30,7 @@ pipeline {
       steps{
         script {
           docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
+            sh "docker push registry.hub.com/kiranks998/react-app:latest"
         }
       }
     }
