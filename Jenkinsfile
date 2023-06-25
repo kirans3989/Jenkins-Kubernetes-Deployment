@@ -1,48 +1,45 @@
 pipeline {
-
-  environment {
-    dockerimagename = "bravinwasike/react-app"
-    dockerImage = ""
-  }
-
   agent any
-
-  stages {
+    stages {
 
     stage('Checkout Source') {
       steps {
         checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/kirans3989/Jenkins-Kubernetes-Deployment.git', credentialsId: 'Github']]])
       }
     }
+    stage('Pull image') {
+      steps {
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+            docker.image('bravinwasike/react-app:latest>').pull()
+          }
+        }
+      }
+    }
 
     stage('Build image') {
-      steps{
+      steps {
         script {
-          dockerImage = docker.build dockerimagename
+          docker.build('kiranks998/react-app:latest>', '.').push()
         }
       }
     }
 
-    stage('Pushing Image') {
-       environment {
-               registryCredential = 'DockerHub-Credentails'
-           }
-      steps{
+    stage('Push image') {
+      steps {
         script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-          docker push kiranks998/react-app
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+            docker.image('kiranks998/react-app:latest').push()
+          }
         }
       }
     }
-    }
-    stage('Deploying React.js container to Kubernetes') {
+     stage('Deploying React.js container to Kubernetes') {
       steps {
         script {
           kubernetesDeploy(configs: "deployment.yaml", "service.yaml")
         }
       }
     }
-
   }
-
 }
