@@ -36,10 +36,12 @@ pipeline {
 
      stage('Deploying React.js container to Kubernetes') {
       steps {
-        script {
-          sh kubectl apply -f deployment.yaml service.yaml
-        }
-      }
+    container('kubectl') {
+        sh 'export PATH=$PATH:/path/to/kubectl-directory'
+        sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml service.yaml'
+       }
+     }
+
      }
   }
 
