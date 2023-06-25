@@ -30,8 +30,7 @@ pipeline {
       steps{
         script {
           docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            docker tag bravinwasike/react-app kiranks998/react-app:latest
-            docker push kiranks998/react-app
+          docker push kiranks998/react-app
         }
       }
     }
