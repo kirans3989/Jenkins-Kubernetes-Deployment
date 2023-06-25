@@ -28,7 +28,7 @@ pipeline {
     stage('Push image') {
       steps {
         script {
-          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+          docker.withRegistry('https://registry.hub.docker.com', 'DockerHub-Credentails') {
             docker.image('kiranks998/react-app:latest').push()
           }
         }
