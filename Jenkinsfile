@@ -1,4 +1,9 @@
 pipeline {
+  environment {
+registry = "kiranks998/react-app"
+registryCredential = 'DockerHub-Credentails'
+dockerImage = ''
+}
   agent any
     stages {
 
@@ -17,11 +22,16 @@ pipeline {
         stage('Push image') {
       steps {
         script {
-          docker.withRegistry('https://registry.hub.docker.com', 'DockerHub-Credentails') {
-            docker.Image('kiranks998/react-app:latest').push()
+          docker.withRegistry( '', registryCredential ) {
+          dockerImage.push()
           }
         }
       }
     }
+      stage('Cleaning up') {
+    steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
  }
+}
 }
